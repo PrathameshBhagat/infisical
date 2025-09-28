@@ -9,6 +9,7 @@ import { conditionsMatcher, PermissionConditionOperators } from "@app/lib/casl";
 import { UnpackedPermissionSchema } from "@app/server/routes/sanitizedSchema/permission";
 
 import { PermissionConditionSchema } from "./permission-types";
+import { ProjectMembershipRole } from "@app/db/schemas";
 
 export enum ProjectPermissionActions {
   Read = "read",
@@ -185,6 +186,9 @@ export enum ProjectPermissionSecretEventActions {
 export enum ProjectPermissionAuditLogsActions {
   Read = "read"
 }
+
+export const isCustomProjectRole = (slug: string) =>
+  !Object.values(ProjectMembershipRole).includes(slug as ProjectMembershipRole);
 
 export enum ProjectPermissionSub {
   Role = "role",
