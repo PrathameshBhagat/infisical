@@ -171,7 +171,9 @@ export const permissionServiceFactory = ({
 
     return {
       permission,
-      memberships: permissionData
+      memberships: permissionData,
+      hasRole: (role: string) =>
+        permissionData.some((memberships) => memberships.roles.some((el) => role === (el.customRoleSlug || el.role)))
     };
   };
 

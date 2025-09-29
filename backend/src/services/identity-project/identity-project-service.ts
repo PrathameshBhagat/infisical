@@ -12,6 +12,7 @@ import { groupBy } from "@app/lib/fn";
 import { ms } from "@app/lib/ms";
 
 import { TIdentityOrgDALFactory } from "../identity/identity-org-dal";
+import { TOrgDALFactory } from "../org/org-dal";
 import { TProjectDALFactory } from "../project/project-dal";
 import { ProjectUserMembershipTemporaryMode } from "../project-membership/project-membership-types";
 import { TProjectRoleDALFactory } from "../project-role/project-role-dal";
@@ -28,6 +29,7 @@ import {
 
 type TIdentityProjectServiceFactoryDep = {
   identityProjectDAL: TIdentityProjectDALFactory;
+  orgDAL: Pick<TOrgDALFactory, "findById">;
   identityProjectMembershipRoleDAL: Pick<
     TIdentityProjectMembershipRoleDALFactory,
     "create" | "transaction" | "insertMany" | "delete"
@@ -35,7 +37,7 @@ type TIdentityProjectServiceFactoryDep = {
   projectDAL: Pick<TProjectDALFactory, "findById">;
   projectRoleDAL: Pick<TProjectRoleDALFactory, "find">;
   identityOrgMembershipDAL: Pick<TIdentityOrgDALFactory, "findOne">;
-  permissionService: Pick<TPermissionServiceFactory, "getProjectPermission" | "getProjectPermissionByRole">;
+  permissionService: Pick<TPermissionServiceFactory, "getProjectPermission" | "getProjectPermissionByRoles">;
 };
 
 export type TIdentityProjectServiceFactory = ReturnType<typeof identityProjectServiceFactory>;
@@ -46,7 +48,8 @@ export const identityProjectServiceFactory = ({
   identityOrgMembershipDAL,
   identityProjectMembershipRoleDAL,
   projectDAL,
-  projectRoleDAL
+  projectRoleDAL,
+  orgDAL
 }: TIdentityProjectServiceFactoryDep) => {
   const createProjectIdentity = async ({
     identityId,
@@ -57,7 +60,7 @@ export const identityProjectServiceFactory = ({
     projectId,
     roles
   }: TCreateProjectIdentityDTO) => {
-    const { permission, membership } = await permissionService.getProjectPermission({
+    const { permission } = await permissionService.getProjectPermission({
       actor,
       actorId,
       projectId,
@@ -88,31 +91,29 @@ export const identityProjectServiceFactory = ({
         message: `Failed to find identity with ID ${identityId}`
       });
 
-    for await (const { role: requestedRoleChange } of roles) {
-      const { permission: rolePermission } = await permissionService.getProjectPermissionByRole(
-        requestedRoleChange,
-        projectId
+    const providedRolePermissionDetails = await permissionService.getProjectPermissionByRoles(
+      roles.map((el) => el.role).filter((el) => el !== ProjectMembershipRole.NoAccess),
+      projectId
+    );
+    const { shouldUseNewPrivilegeSystem } = await orgDAL.findById(actorOrgId);
+    for await (const { permission: rolePermission } of providedRolePermissionDetails) {
+      const permissionBoundary = validatePrivilegeChangeOperation(
+        shouldUseNewPrivilegeSystem,
+        ProjectPermissionIdentityActions.GrantPrivileges,
+        ProjectPermissionSub.Identity,
+        permission,
+        rolePermission
       );
-
-      if (requestedRoleChange !== ProjectMembershipRole.NoAccess) {
-        const permissionBoundary = validatePrivilegeChangeOperation(
-          membership.shouldUseNewPrivilegeSystem,
-          ProjectPermissionIdentityActions.GrantPrivileges,
-          ProjectPermissionSub.Identity,
-          permission,
-          rolePermission
-        );
-        if (!permissionBoundary.isValid)
-          throw new PermissionBoundaryError({
-            message: constructPermissionErrorMessage(
-              "Failed to assign to role",
-              membership.shouldUseNewPrivilegeSystem,
-              ProjectPermissionIdentityActions.GrantPrivileges,
-              ProjectPermissionSub.Identity
-            ),
-            details: { missingPermissions: permissionBoundary.missingPermissions }
-          });
-      }
+      if (!permissionBoundary.isValid)
+        throw new PermissionBoundaryError({
+          message: constructPermissionErrorMessage(
+            "Failed to assign to role",
+            shouldUseNewPrivilegeSystem,
+            ProjectPermissionIdentityActions.GrantPrivileges,
+            ProjectPermissionSub.Identity
+          ),
+          details: { missingPermissions: permissionBoundary.missingPermissions }
+        });
     }
 
     // validate custom roles input
@@ -177,7 +178,7 @@ export const identityProjectServiceFactory = ({
     actorAuthMethod,
     actorOrgId
   }: TUpdateProjectIdentityDTO) => {
-    const { permission, membership } = await permissionService.getProjectPermission({
+    const { permission } = await permissionService.getProjectPermission({
       actor,
       actorId,
       projectId,
@@ -196,14 +197,14 @@ export const identityProjectServiceFactory = ({
         message: `Identity with ID ${identityId} doesn't exists in project with ID ${projectId}`
       });
 
-    for await (const { role: requestedRoleChange } of roles) {
-      const { permission: rolePermission } = await permissionService.getProjectPermissionByRole(
-        requestedRoleChange,
-        projectId
-      );
-
+    const providedRolePermissionDetails = await permissionService.getProjectPermissionByRoles(
+      roles.map((el) => el.role).filter((el) => el !== ProjectMembershipRole.NoAccess),
+      projectId
+    );
+    const { shouldUseNewPrivilegeSystem } = await orgDAL.findById(actorOrgId);
+    for await (const { permission: rolePermission } of providedRolePermissionDetails) {
       const permissionBoundary = validatePrivilegeChangeOperation(
-        membership.shouldUseNewPrivilegeSystem,
+        shouldUseNewPrivilegeSystem,
         ProjectPermissionIdentityActions.GrantPrivileges,
         ProjectPermissionSub.Identity,
         permission,
@@ -214,7 +215,7 @@ export const identityProjectServiceFactory = ({
         throw new PermissionBoundaryError({
           message: constructPermissionErrorMessage(
             "Failed to change role",
-            membership.shouldUseNewPrivilegeSystem,
+            shouldUseNewPrivilegeSystem,
             ProjectPermissionIdentityActions.GrantPrivileges,
             ProjectPermissionSub.Identity
           ),
@@ -229,7 +230,7 @@ export const identityProjectServiceFactory = ({
           // we don't want to include custom in this check;
           // this unintentionally enables setting slug to custom which is reserved
           .filter((r) => r !== ProjectMembershipRole.Custom)
-          .includes(role as ProjectMembershipRole)
+          .includes(role as ProjectMembershipRole.Admin)
     );
     const hasCustomRole = Boolean(customInputRoles.length);
     const customRoles = hasCustomRole

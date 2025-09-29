@@ -35,7 +35,7 @@ type TProjectRoleServiceFactoryDep = {
   identityDAL: Pick<TIdentityDALFactory, "findById">;
   userDAL: Pick<TUserDALFactory, "findById">;
   projectDAL: Pick<TProjectDALFactory, "findProjectBySlug" | "findProjectById">;
-  permissionService: Pick<TPermissionServiceFactory, "getProjectPermission" | "getUserProjectPermission">;
+  permissionService: Pick<TPermissionServiceFactory, "getProjectPermission">;
   identityProjectMembershipRoleDAL: TIdentityProjectMembershipRoleDALFactory;
   projectUserMembershipRoleDAL: TProjectUserMembershipRoleDALFactory;
 };
@@ -237,7 +237,7 @@ export const projectRoleServiceFactory = ({
     actorAuthMethod: ActorAuthMethod,
     actorOrgId: string | undefined
   ) => {
-    const { permission, membership } = await permissionService.getProjectPermission({
+    const { permission, memberships } = await permissionService.getProjectPermission({
       actor: ActorType.USER,
       actorId: userId,
       projectId,
@@ -246,7 +246,6 @@ export const projectRoleServiceFactory = ({
       actionProjectType: ActionProjectType.Any
     });
     // just to satisfy ts
-    if (!("roles" in membership)) throw new BadRequestError({ message: "Service token not allowed" });
 
     const assumedPrivilegeDetailsCtx = requestContext.get("assumedPrivilegeDetails");
     const isAssumingPrivilege = assumedPrivilegeDetailsCtx?.projectId === projectId;
@@ -272,7 +271,7 @@ export const projectRoleServiceFactory = ({
       assumedPrivilegeDetails.actorEmail = userDetails?.email || "";
     }
 
-    return { permissions: packRules(permission.rules), membership, assumedPrivilegeDetails };
+    return { permissions: packRules(permission.rules), memberships, assumedPrivilegeDetails };
   };
 
   return { createRole, updateRole, deleteRole, listRoles, getUserPermission, getRoleBySlug };

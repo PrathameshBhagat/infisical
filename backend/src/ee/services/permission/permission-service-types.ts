@@ -66,6 +66,7 @@ export type TPermissionServiceFactory = {
   ) => Promise<{
     permission: MongoAbility<OrgPermissionSet, MongoQuery>;
     memberships: TMemberships[];
+    hasRole: (role: string) => boolean;
   }>;
   getProjectPermission: (arg: TGetProjectPermissionArg) => Promise<{
     permission: MongoAbility<ProjectPermissionSet, MongoQuery>;
