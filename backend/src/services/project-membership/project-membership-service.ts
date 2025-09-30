@@ -43,7 +43,7 @@ import {
 import { TProjectUserMembershipRoleDALFactory } from "./project-user-membership-role-dal";
 
 type TProjectMembershipServiceFactoryDep = {
-  permissionService: Pick<TPermissionServiceFactory, "getProjectPermission" | "getProjectPermissionByRole">;
+  permissionService: Pick<TPermissionServiceFactory, "getProjectPermission" | "getProjectPermissionByRoles">;
   smtpService: TSmtpService;
   projectBotDAL: TProjectBotDALFactory;
   projectMembershipDAL: TProjectMembershipDALFactory;
@@ -560,6 +560,8 @@ export const projectMembershipServiceFactory = ({
         tx
       );
 
+      // TODO(simp): likewise check in all services if i am missing anything
+      // Deletion should handle all cleanups like wise
       await secretReminderRecipientsDAL.delete(
         {
           projectId,
