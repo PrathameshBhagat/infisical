@@ -244,7 +244,6 @@ import { offlineUsageReportServiceFactory } from "@app/services/offline-usage-re
 import { incidentContactDALFactory } from "@app/services/org/incident-contacts-dal";
 import { orgBotDALFactory } from "@app/services/org/org-bot-dal";
 import { orgDALFactory } from "@app/services/org/org-dal";
-import { orgRoleDALFactory } from "@app/services/org/org-role-dal";
 import { orgRoleServiceFactory } from "@app/services/org/org-role-service";
 import { orgServiceFactory } from "@app/services/org/org-service";
 import { orgAdminServiceFactory } from "@app/services/org-admin/org-admin-service";
@@ -385,7 +384,6 @@ export const registerRoutes = async (
   const orgMembershipDAL = orgMembershipDALFactory(db);
   const orgBotDAL = orgBotDALFactory(db);
   const incidentContactDAL = incidentContactDALFactory(db);
-  const orgRoleDAL = orgRoleDALFactory(db);
   const rateLimitDAL = rateLimitDALFactory(db);
   const apiKeyDAL = apiKeyDALFactory(db);
 
