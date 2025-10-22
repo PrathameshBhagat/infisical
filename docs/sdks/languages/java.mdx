@@ -90,89 +90,107 @@ The SDK methods are organized into the following high-level categories:
 
 The `Auth` component provides methods for authentication:
 
-### Universal Auth
+<AccordionGroup>
+  <Accordion title="Universal Auth">
 
-#### Authenticating
+    ### Universal Auth
 
-```java
-public void UniversalAuthLogin(
-  String clientId,
-  String clientSecret
-)
-throws InfisicalException
-```
+    #### Authenticating
 
-```java
-sdk.Auth().UniversalAuthLogin(
-  "CLIENT_ID",
-  "CLIENT_SECRET"
-);
-```
+    ```java
+    public void UniversalAuthLogin(
+      String clientId,
+      String clientSecret
+    )
+    throws InfisicalException
+    ```
+
+    ```java
+    sdk.Auth().UniversalAuthLogin(
+      "CLIENT_ID",
+      "CLIENT_SECRET"
+    );
+    ```
 
 
-**Parameters:**
-- `clientId` (string): The client ID of your Machine Identity.
-- `clientSecret` (string): The client secret of your Machine Identity.
+    **Parameters:**
+    - `clientId` (string): The client ID of your Machine Identity.
+    - `clientSecret` (string): The client secret of your Machine Identity.
+  </Accordion>
 
-### AWS Auth
+  <Accordion title="AWS Auth">
 
-```java
-public void AwsAuthLogin(
-  String identityId
-)
-throws InfisicalException
-```
+    ### AWS Auth
 
-```java
-sdk.Auth().AwsAuthLogin("<machine-identity-id>");
-```
+    ```java
+    public void AwsAuthLogin(
+      String identityId
+    )
+    throws InfisicalException
+    ```
 
-**Parameters:**
-- `identityId` (String): The ID of the machine identity to authenticate with.
+    ```java
+    sdk.Auth().AwsAuthLogin("<machine-identity-id>");
+    ```
 
-### LDAP Auth
+    **Parameters:**
+    - `identityId` (String): The ID of the machine identity to authenticate with.
 
-```java
-public void LdapAuthLogin(
-  LdapAuthLoginInput input
-)
-throws InfisicalException
-```
+  </Accordion>
 
-```java
-var input = LdapAuthLoginInput
-  .builder()
-  .identityId("<machine-identity-id>")
-  .username("<ldap-username>")
-  .password("<ldap-password>")
-  .build();
+  <Accordion title="LDAP Auth">
 
-sdk.Auth().LdapAuthLogin(input);
-```
+    ### LDAP Auth
 
-**Parameters:**
-- `input` (LdapAuthLoginInput): The input for authenticating with LDAP.
-  - `identityId` (String): The ID of the machine identity to authenticate with.
-  - `username` (String): The LDAP username.
-  - `password` (String): The LDAP password.
+    ```java
+    public void LdapAuthLogin(
+      LdapAuthLoginInput input
+    )
+    throws InfisicalException
+    ```
 
-### Access Token Auth
+    ```java
+    var input = LdapAuthLoginInput
+      .builder()
+      .identityId("<machine-identity-id>")
+      .username("<ldap-username>")
+      .password("<ldap-password>")
+      .build();
 
-#### Authenticating
+    sdk.Auth().LdapAuthLogin(input);
+    ```
 
-```java
-public void SetAccessToken(
-  String accessToken
-)
-throws InfisicalException
-```
+    **Parameters:**
+    - `input` (LdapAuthLoginInput): The input for authenticating with LDAP.
+      - `identityId` (String): The ID of the machine identity to authenticate with.
+      - `username` (String): The LDAP username.
+      - `password` (String): The LDAP password.
 
-```java
-sdk.Auth().SetAccessToken("ACCESS_TOKEN");
-```
+  </Accordion>
 
-**Parameters:**
-- `accessToken` (string): The access token you want to use for authentication.
+  <Accordion title="Access Token Auth">
+
+    ### Access Token Auth
+
+    #### Authenticating
+
+    ```java
+    public void SetAccessToken(
+      String accessToken
+    )
+    throws InfisicalException
+    ```
+
+    ```java
+    sdk.Auth().SetAccessToken("ACCESS_TOKEN");
+    ```
+
+    **Parameters:**
+    - `accessToken` (string): The access token you want to use for authentication.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `Secrets`
 
