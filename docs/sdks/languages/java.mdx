@@ -196,189 +196,211 @@ The `Auth` component provides methods for authentication:
 
 This sub-class handles operations related to secrets:
 
-#### List Secrets
+<AccordionGroup>
+  <Accordion title="List Secrets">
 
-```java
-public List<Secret> ListSecrets(
-    String projectId,
-    String environmentSlug,
-    String secretPath,
-    Boolean expandSecretReferences,
-    Boolean recursive,
-    Boolean includeImports,
-    Boolean setSecretsOnSystemProperties
-)
+    #### List Secrets
 
-throws InfisicalException
-```
+    ```java
+    public List<Secret> ListSecrets(
+        String projectId,
+        String environmentSlug,
+        String secretPath,
+        Boolean expandSecretReferences,
+        Boolean recursive,
+        Boolean includeImports,
+        Boolean setSecretsOnSystemProperties
+    )
 
-```java
-List<Secret> secrets = sdk.Secrets().ListSecrets(
-  "<project-id>",
-  "<env-slug>", // dev, prod, staging, etc.
-  "/secret/path", // `/` is the root folder
-  false, // Should expand secret references
-  false, // Should get secrets recursively from sub folders
-  false, // Should include imports
-  false // Should set the fetched secrets as key/value pairs on the system properties. Makes the secrets accessible as System.getProperty("<secret-key>")
-);
-```
+    throws InfisicalException
+    ```
 
-**Parameters:**
-- `projectId` (string): The ID of your project.
-- `environmentSlug` (string): The environment in which to list secrets (e.g., "dev").
-- `secretPath` (string): The path to the secrets.
-- `expandSecretReferences` (boolean): Whether to expand secret references.
-- `recursive` (boolean): Whether to list secrets recursively.
-- `includeImports` (boolean): Whether to include imported secrets.
-- `setSecretsOnSystemProperties` (boolean): Set the retrieved secrets as key/value pairs on the system properties, making them accessible through `System.getProperty("<secret-key>")`
+    ```java
+    List<Secret> secrets = sdk.Secrets().ListSecrets(
+      "<project-id>",
+      "<env-slug>", // dev, prod, staging, etc.
+      "/secret/path", // `/` is the root folder
+      false, // Should expand secret references
+      false, // Should get secrets recursively from sub folders
+      false, // Should include imports
+      false // Should set the fetched secrets as key/value pairs on the system properties. Makes the secrets accessible as System.getProperty("<secret-key>")
+    );
+    ```
 
-**Returns:**
-- `List<Secret>`: The response containing the list of secrets.
+    **Parameters:**
+    - `projectId` (string): The ID of your project.
+    - `environmentSlug` (string): The environment in which to list secrets (e.g., "dev").
+    - `secretPath` (string): The path to the secrets.
+    - `expandSecretReferences` (boolean): Whether to expand secret references.
+    - `recursive` (boolean): Whether to list secrets recursively.
+    - `includeImports` (boolean): Whether to include imported secrets.
+    - `setSecretsOnSystemProperties` (boolean): Set the retrieved secrets as key/value pairs on the system properties, making them accessible through `System.getProperty("<secret-key>")`
 
-#### Create Secret
+    **Returns:**
+    - `List<Secret>`: The response containing the list of secrets.
 
+  </Accordion>
 
-```java
-public Secret CreateSecret(
-    String secretName,
-    String secretValue,
-    String projectId,
-    String environmentSlug,
-    String secretPath
-)
-throws InfisicalException
-```
+  <Accordion title="Create Secret">
 
-```java
-Secret newSecret = sdk.Secrets().CreateSecret(
-  "NEW_SECRET_NAME",
-  "secret-value",
-  "<project-id>",
-  "<env-slug>", // dev, prod, staging, etc.
-  "/secret/path", // `/` is the root folder
-);
-```
-
-**Parameters:**
-- `secretName` (string): The name of the secret to create
-- `secretValue` (string): The value of the secret.
-- `projectId` (string): The ID of your project.
-- `environmentSlug` (string): The environment in which to create the secret.
-- `secretPath` (string, optional): The path to the secret.
-
-**Returns:**
-- `Secret`: The created secret.
-
-#### Update Secret
-
-```java
-public Secret UpdateSecret(
-    String secretName,
-    String projectId,
-    String environmentSlug,
-    String secretPath,
-    String newSecretValue,
-    String newSecretName
-  )
-    
-throws InfisicalException
-```
+    #### Create Secret
 
 
-```java
-Secret updatedSecret = sdk.Secrets().UpdateSecret(
-  "SECRET_NAME",
-  "<project-id>",
-  "<env-slug>", // dev, prod, staging, etc.
-  "/secret/path", // `/` is the root folder
-  "NEW_SECRET_VALUE", // nullable
-  "NEW_SECRET_NAME" // nullable
-);
-```
+    ```java
+    public Secret CreateSecret(
+        String secretName,
+        String secretValue,
+        String projectId,
+        String environmentSlug,
+        String secretPath
+    )
+    throws InfisicalException
+    ```
 
-**Parameters:**
-- `secretName` (string): The name of the secret to update.
-- `projectId` (string): The ID of your project.
-- `environmentSlug` (string): The environment in which to update the secret.
-- `secretPath` (string): The path to the secret.
-- `newSecretValue` (string, nullable): The new value of the secret.
-- `newSecretName` (string, nullable): A new name for the secret.
+    ```java
+    Secret newSecret = sdk.Secrets().CreateSecret(
+      "NEW_SECRET_NAME",
+      "secret-value",
+      "<project-id>",
+      "<env-slug>", // dev, prod, staging, etc.
+      "/secret/path", // `/` is the root folder
+    );
+    ```
 
-**Returns:**
-- `Secret`: The updated secret.
+    **Parameters:**
+    - `secretName` (string): The name of the secret to create
+    - `secretValue` (string): The value of the secret.
+    - `projectId` (string): The ID of your project.
+    - `environmentSlug` (string): The environment in which to create the secret.
+    - `secretPath` (string, optional): The path to the secret.
 
-#### Get Secret by Name
+    **Returns:**
+    - `Secret`: The created secret.
 
-```java
-public Secret GetSecret(
-    String secretName,
-    String projectId,
-    String environmentSlug,
-    String secretPath,
-    Boolean expandSecretReferences,
-    Boolean includeImports,
-    String secretType
-  )
-throws InfisicalException
-```
+  </Accordion>
 
-```java
-Secret secret = sdk.Secrets().GetSecret(
-  "SECRET_NAME",
-  "<project-id>",
-  "<env-slug>", // dev, prod, staging, etc.
-  "/secret/path", // `/` is the root folder
-  false, // Should expand secret references
-  false, // Should get secrets recursively from sub folders
-  false, // Should include imports
-  "shared" // Optional Secret Type (defaults to "shared")
-);
-```
+  <Accordion title="Update Secret">
 
-**Parameters:**
-- `secretName` (string): The name of the secret to get`
-- `projectId` (string): The ID of your project.
-- `environmentSlug` (string): The environment in which to retrieve the secret.
-- `secretPath` (string): The path to the secret.
-- `expandSecretReferences` (boolean, optional): Whether to expand secret references.
-- `includeImports` (boolean, optional): Whether to include imported secrets.
-- `secretType` (personal | shared, optional): The type of secret to fetch.
+    #### Update Secret
+
+    ```java
+    public Secret UpdateSecret(
+        String secretName,
+        String projectId,
+        String environmentSlug,
+        String secretPath,
+        String newSecretValue,
+        String newSecretName
+      )
+        
+    throws InfisicalException
+    ```
 
 
-**Returns:**
-- `Secret`: The fetched secret.
+    ```java
+    Secret updatedSecret = sdk.Secrets().UpdateSecret(
+      "SECRET_NAME",
+      "<project-id>",
+      "<env-slug>", // dev, prod, staging, etc.
+      "/secret/path", // `/` is the root folder
+      "NEW_SECRET_VALUE", // nullable
+      "NEW_SECRET_NAME" // nullable
+    );
+    ```
 
-#### Delete Secret by Name
+    **Parameters:**
+    - `secretName` (string): The name of the secret to update.
+    - `projectId` (string): The ID of your project.
+    - `environmentSlug` (string): The environment in which to update the secret.
+    - `secretPath` (string): The path to the secret.
+    - `newSecretValue` (string, nullable): The new value of the secret.
+    - `newSecretName` (string, nullable): A new name for the secret.
 
-```java
-public Secret DeleteSecret(
-    String secretName,
-    String projectId,
-    String environmentSlug,
-    String secretPath
-  )
-throws InfisicalException
-```
+    **Returns:**
+    - `Secret`: The updated secret.
 
-```java
-Secret deletedSecret = sdk.Secrets().DeleteSecret(
-  "SECRET_NAME", 
-  "<project-id>",
-  "<env-slug>", // dev, prod, staging, etc.
-  "/secret/path", // `/` is the root folder
-);
-```
+  </Accordion>
 
-**Parameters:**
-- `secretName` (string): The name of the secret to delete.
-- `projectId` (string): The ID of your project.
-- `environmentSlug` (string): The environment in which to delete the secret.
-- `secretPath` (string, optional): The path to the secret.
+  <Accordion title="Get Secret by Name">
 
-**Returns:**
-- `Secret`: The deleted secret.
+    #### Get Secret by Name
 
+    ```java
+    public Secret GetSecret(
+        String secretName,
+        String projectId,
+        String environmentSlug,
+        String secretPath,
+        Boolean expandSecretReferences,
+        Boolean includeImports,
+        String secretType
+      )
+    throws InfisicalException
+    ```
+
+    ```java
+    Secret secret = sdk.Secrets().GetSecret(
+      "SECRET_NAME",
+      "<project-id>",
+      "<env-slug>", // dev, prod, staging, etc.
+      "/secret/path", // `/` is the root folder
+      false, // Should expand secret references
+      false, // Should get secrets recursively from sub folders
+      false, // Should include imports
+      "shared" // Optional Secret Type (defaults to "shared")
+    );
+    ```
+
+    **Parameters:**
+    - `secretName` (string): The name of the secret to get`
+    - `projectId` (string): The ID of your project.
+    - `environmentSlug` (string): The environment in which to retrieve the secret.
+    - `secretPath` (string): The path to the secret.
+    - `expandSecretReferences` (boolean, optional): Whether to expand secret references.
+    - `includeImports` (boolean, optional): Whether to include imported secrets.
+    - `secretType` (personal | shared, optional): The type of secret to fetch.
+
+
+    **Returns:**
+    - `Secret`: The fetched secret.
+
+  </Accordion>
+
+  <Accordion title="Delete Secret by Name">
+
+    #### Delete Secret by Name
+
+    ```java
+    public Secret DeleteSecret(
+        String secretName,
+        String projectId,
+        String environmentSlug,
+        String secretPath
+      )
+    throws InfisicalException
+    ```
+
+    ```java
+    Secret deletedSecret = sdk.Secrets().DeleteSecret(
+      "SECRET_NAME", 
+      "<project-id>",
+      "<env-slug>", // dev, prod, staging, etc.
+      "/secret/path", // `/` is the root folder
+    );
+    ```
+
+    **Parameters:**
+    - `secretName` (string): The name of the secret to delete.
+    - `projectId` (string): The ID of your project.
+    - `environmentSlug` (string): The environment in which to delete the secret.
+    - `secretPath` (string, optional): The path to the secret.
+
+    **Returns:**
+    - `Secret`: The deleted secret.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `Folders`
 
