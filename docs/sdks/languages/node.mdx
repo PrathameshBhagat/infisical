@@ -323,147 +323,162 @@ This sub-class handles operations related to secrets:
 
 ### `dynamicSecrets`
 
+<AccordionGroup>
 
-#### Create a new dynamic secret
+  <Accordion title="Create a new dynamic secret">
 
-Creating a new dynamic secret can be done by using the `.dynamicSecrets().create({})` function. More details below.
-
-
-The input for creating new dynamic secret varies greatly between secret types.
-For a more in-depth description of each input type for each dynamic secret type, please refer to [our API documentation](https://infisical.com/docs/api-reference/endpoints/dynamic-secrets/create)
+    Creating a new dynamic secret can be done by using the `.dynamicSecrets().create({})` function. More details below.
 
 
-##### Example for creating a new Redis dynamic secret
-
-```typescript
-import { InfisicalSDK, DynamicSecretProviders } from "@infisical/sdk";
-	const client = new InfisicalSDK();
-
-	await client.auth().universalAuth.login({
-		// For localhost
-		clientId: "CLIENT_ID",
-		clientSecret: "CLIENT_SECRET"
-	});
-const dynamicSecret = await client.dynamicSecrets().create({
-  provider: {
-    type: DynamicSecretProviders.Redis,
-    inputs: {
-      host: "<redis-host>",
-      port: 6479,
-      username: "<redis-username>",
-      password: "<redis-password>", // Only required if your Redis instance uses authentication (recommended)
-      creationStatement: "ACL SETUSER {{username}} on >{{password}} ~* &* +@all",
-      revocationStatement: "ACL DELUSER {{username}}"
-    }
-  },
-  defaultTTL: "1h",
-  maxTTL: "24h",
-  name: "dynamic-secret-name",
-  projectSlug: "project-slug",
-  environmentSlug: "dev"
-});
-console.log(dynamicSecret);
-```
-
-**Returns:**
-- `DynamicSecret`: The created dynamic secret.
+    The input for creating new dynamic secret varies greatly between secret types.
+    For a more in-depth description of each input type for each dynamic secret type, please refer to [our API documentation](https://infisical.com/docs/api-reference/endpoints/dynamic-secrets/create)
 
 
-#### Delete a dynamic secret
+    ##### Example for creating a new Redis dynamic secret
 
-Note: Deleting a dynamic secret will also delete it's associated leases.
+    ```typescript
+    import { InfisicalSDK, DynamicSecretProviders } from "@infisical/sdk";
+      const client = new InfisicalSDK();
 
-```typescript
-const deletedDynamicSecret = await client.dynamicSecrets().delete("dynamic-secret-name", {
-  environmentSlug: "dev",
-  projectSlug: "project-slug"
-});
-```
+      await client.auth().universalAuth.login({
+        // For localhost
+        clientId: "CLIENT_ID",
+        clientSecret: "CLIENT_SECRET"
+      });
+    const dynamicSecret = await client.dynamicSecrets().create({
+      provider: {
+        type: DynamicSecretProviders.Redis,
+        inputs: {
+          host: "<redis-host>",
+          port: 6479,
+          username: "<redis-username>",
+          password: "<redis-password>", // Only required if your Redis instance uses authentication (recommended)
+          creationStatement: "ACL SETUSER {{username}} on >{{password}} ~* &* +@all",
+          revocationStatement: "ACL DELUSER {{username}}"
+        }
+      },
+      defaultTTL: "1h",
+      maxTTL: "24h",
+      name: "dynamic-secret-name",
+      projectSlug: "project-slug",
+      environmentSlug: "dev"
+    });
+    console.log(dynamicSecret);
+    ```
 
-**Parameters:**
-- `secretName` (string): The ID of the dynamic secret to delete
-- `options` (object):
-  - `projectSlug` (str): The ID of your project.
-  - `environment` (str): The environment in which to delete the secret.
+    **Returns:**
+    - `DynamicSecret`: The created dynamic secret.
 
-**Returns:**
-- `DynamicSecret`: The deleted dynamic secret.
+  </Accordion>
+
+  <Accordion title="Delete a dynamic secret">
+
+    Note: Deleting a dynamic secret will also delete it's associated leases.
+
+    ```typescript
+    const deletedDynamicSecret = await client.dynamicSecrets().delete("dynamic-secret-name", {
+      environmentSlug: "dev",
+      projectSlug: "project-slug"
+    });
+    ```
+
+    **Parameters:**
+    - `secretName` (string): The ID of the dynamic secret to delete
+    - `options` (object):
+      - `projectSlug` (str): The ID of your project.
+      - `environment` (str): The environment in which to delete the secret.
+
+    **Returns:**
+    - `DynamicSecret`: The deleted dynamic secret.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `dynamicSecrets.leases`
 In this section you'll learn how to work with dynamic secret leases
 
+<AccordionGroup>
 
-#### Create a new lease
+  <Accordion title="Create a new lease">
 
-```typescript
-const lease = await client.dynamicSecrets().leases.create({
-  dynamicSecretName: "dynamic-secret-name",
-  environmentSlug: "dev",
-  projectSlug: "your-project-slug",
-  path: "/foo/bar",
-  ttl: "5m" // Optional
-});
+    ```typescript
+    const lease = await client.dynamicSecrets().leases.create({
+      dynamicSecretName: "dynamic-secret-name",
+      environmentSlug: "dev",
+      projectSlug: "your-project-slug",
+      path: "/foo/bar",
+      ttl: "5m" // Optional
+    });
 
-console.log(lease);
-```
+    console.log(lease);
+    ```
 
-**Your dynamic secret credentials will be contained user `lease.data` in this example.**
+    **Your dynamic secret credentials will be contained user `lease.data` in this example.**
 
-**Parameters:**
-- `dynamicSecretName` (string): The name of the dynamic secret you wish to create a lease for.
-- `projectSlug` (string): The slug of the project where the secret is located.
-- `environmentSlug` (string): The environment where the dynamic secret is located.
-- `path` (string, optional): The path of where the dynamic secret is located. 
-- `ttl` (string, optional): A [vercel/ms](https://github.com/vercel/ms) encoded string representation of how long the lease credentials should be valid for. This will default to the dynamic secret's default TTL if not specified.
+    **Parameters:**
+    - `dynamicSecretName` (string): The name of the dynamic secret you wish to create a lease for.
+    - `projectSlug` (string): The slug of the project where the secret is located.
+    - `environmentSlug` (string): The environment where the dynamic secret is located.
+    - `path` (string, optional): The path of where the dynamic secret is located. 
+    - `ttl` (string, optional): A [vercel/ms](https://github.com/vercel/ms) encoded string representation of how long the lease credentials should be valid for. This will default to the dynamic secret's default TTL if not specified.
 
-**Returns:**
-- `CreateLeaseResponse`: The dynamic secret lease result.
+    **Returns:**
+    - `CreateLeaseResponse`: The dynamic secret lease result.
 
+  </Accordion>
 
-#### Delete a lease
-```typescript
-const deletedLease = await client.dynamicSecrets().leases.delete(newLease.lease.id, {
-  environmentSlug: "dev",
-  projectSlug: "test-zb-3a",
-  path: "/foo/bar",
-  isForced: false // Whether or not to forcefully delete the lease. This can't guarantee that the lease will be deleted from the external provider.
-});
-```
+  <Accordion title="Delete a lease">
 
-**Parameters:**
-- `leaseId` (string): The ID of the lease you want to delete.
-- options:
-  - `projectSlug` (string): The slug of the project where the secret is located.
-  - `environmentSlug` (string): The environment where the dynamic secret is located.
-  - `path` (string, optional): The path of where the dynamic secret is located. 
-  - `isForced` (bool, optional): Whether or not to forcefully delete the lease. This can't guarantee that the lease will be deleted from the external provider, and is potentially unsafe for sensitive dynamic secrets.
+    ```typescript
+    const deletedLease = await client.dynamicSecrets().leases.delete(newLease.lease.id, {
+      environmentSlug: "dev",
+      projectSlug: "test-zb-3a",
+      path: "/foo/bar",
+      isForced: false // Whether or not to forcefully delete the lease. This can't guarantee that the lease will be deleted from the external provider.
+    });
+    ```
 
-**Returns:**
-- `DeleteLeaseResponse`: The deleted lease result.
+    **Parameters:**
+    - `leaseId` (string): The ID of the lease you want to delete.
+    - options:
+      - `projectSlug` (string): The slug of the project where the secret is located.
+      - `environmentSlug` (string): The environment where the dynamic secret is located.
+      - `path` (string, optional): The path of where the dynamic secret is located. 
+      - `isForced` (bool, optional): Whether or not to forcefully delete the lease. This can't guarantee that the lease will be deleted from the external provider, and is potentially unsafe for sensitive dynamic secrets.
 
-#### Renew a lease
+    **Returns:**
+    - `DeleteLeaseResponse`: The deleted lease result.
 
-Please note that renewals must happen **before** the lease has fully expired. After renewing the lease, you won't be given new credentials. Instead the existing credentials will continue to live for the specified TTL
+  </Accordion>
 
-```typescript
-const renewedLease = await client.dynamicSecrets().leases.renew(newLease.lease.id, {
-		environmentSlug: "dev",
-		projectSlug: "project-slug",
-		path: "/foo/bar", // Optional
-		ttl: "10m" // Optional
-	});
-```
+  <Accordion title="Renew a lease">
 
-**Parameters:**
-- `leaseId` (string): The ID of the lease you want to delete.
-- `options` (object):
-  - `projectSlug` (string): The slug of the project where the secret is located.
-  - `environmentSlug` (string): The environment where the dynamic secret is located.
-  - `path` (string, optional): The path of where the dynamic secret is located. 
-  - `ttl` (string, optional): A [vercel/ms](https://github.com/vercel/ms) encoded string representation of how long the lease credentials should be valid for. This will default to the dynamic secret's default TTL if not specified.
+    Please note that renewals must happen **before** the lease has fully expired. After renewing the lease, you won't be given new credentials. Instead the existing credentials will continue to live for the specified TTL
 
-**Returns:**
-- `RenewLeaseResponse`: The renewed lease response _(doesn't contain new credentials)_.
+    ```typescript
+    const renewedLease = await client.dynamicSecrets().leases.renew(newLease.lease.id, {
+        environmentSlug: "dev",
+        projectSlug: "project-slug",
+        path: "/foo/bar", // Optional
+        ttl: "10m" // Optional
+      });
+    ```
+
+    **Parameters:**
+    - `leaseId` (string): The ID of the lease you want to delete.
+    - `options` (object):
+      - `projectSlug` (string): The slug of the project where the secret is located.
+      - `environmentSlug` (string): The environment where the dynamic secret is located.
+      - `path` (string, optional): The path of where the dynamic secret is located. 
+      - `ttl` (string, optional): A [vercel/ms](https://github.com/vercel/ms) encoded string representation of how long the lease credentials should be valid for. This will default to the dynamic secret's default TTL if not specified.
+
+    **Returns:**
+    - `RenewLeaseResponse`: The renewed lease response _(doesn't contain new credentials)_.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `projects`
 
