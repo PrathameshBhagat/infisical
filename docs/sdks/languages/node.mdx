@@ -482,117 +482,139 @@ In this section you'll learn how to work with dynamic secret leases
 
 ### `projects`
 
-#### Create a new project
+<AccordionGroup>
 
-```typescript
-const project = await client.projects().create({
-  projectName: "<name-of-project>",
-  type: "secret-manager", // cert-manager, secret-manager, kms, ssh
-  projectDescription: "<project-description>", // Optional
-  slug: "<slug-of-project-to-create>", // Optional
-  template: "<project-template-name>", // Optional
-  kmsKeyId: "<kms-key-id>" // Optional
-});
-```
+  <Accordion title="Create a new project">
 
-**Parameters:**
-- `projectName` (string): The name of the project to create.
-- `type` (string): The type of project to create. Valid options are `secret-manager`, `cert-manager`, `kms`, `ssh`
-- `projectDescription` (string): An optional description of the project to create.
-- `slug` (string): An optional slug for the project to create. If not provided, one will be generated automatically.
-- `template` (string): Optionally provide a project template name to use for creating this project.
-- `kmsKeyId` (string): The ID of the KMS key to use for the project. Will use the Infisical KMS by default.
+    ```typescript
+    const project = await client.projects().create({
+      projectName: "<name-of-project>",
+      type: "secret-manager", // cert-manager, secret-manager, kms, ssh
+      projectDescription: "<project-description>", // Optional
+      slug: "<slug-of-project-to-create>", // Optional
+      template: "<project-template-name>", // Optional
+      kmsKeyId: "<kms-key-id>" // Optional
+    });
+    ```
 
-**Returns:**
-- `Project`: The project that was created.
+    **Parameters:**
+    - `projectName` (string): The name of the project to create.
+    - `type` (string): The type of project to create. Valid options are `secret-manager`, `cert-manager`, `kms`, `ssh`
+    - `projectDescription` (string): An optional description of the project to create.
+    - `slug` (string): An optional slug for the project to create. If not provided, one will be generated automatically.
+    - `template` (string): Optionally provide a project template name to use for creating this project.
+    - `kmsKeyId` (string): The ID of the KMS key to use for the project. Will use the Infisical KMS by default.
 
+    **Returns:**
+    - `Project`: The project that was created.
 
-#### Invite members to a project
+  </Accordion>
 
-When inviting members to projects, you must either specify the `emails` or `usernames`. If neither are specified, the SDK will throw an error.
+  <Accordion title="Invite members to a project">
 
-```typescript
-const memberships = await client.projects().inviteMembers({
-  projectId: project.id,
-  emails: ["test1@example.com", "test2@example.com"], // Optional
-  usernames: ["example-user3", "example-user4"] // Optional 
-  roleSlugs: ["member"] // Optional
-});
-```
+    When inviting members to projects, you must either specify the `emails` or `usernames`. If neither are specified, the SDK will throw an error.
 
-**Parameters:**
-- `projectId`: (string): The ID of the project to invite members to
-- `emails`: (string[]): An array of emails of the users to invite to the project.
-- `usernames`: (string[]) An array of usernames of the users to invite to the project.
-- `roleSlugs`: (string[]): An array of role slugs to assign to the members. If not specified, this will default to `member`.
+    ```typescript
+    const memberships = await client.projects().inviteMembers({
+      projectId: project.id,
+      emails: ["test1@example.com", "test2@example.com"], // Optional
+      usernames: ["example-user3", "example-user4"] // Optional 
+      roleSlugs: ["member"] // Optional
+    });
+    ```
 
-**Returns:**
-- `Membership[]`: An array of the created project memberships.
+    **Parameters:**
+    - `projectId`: (string): The ID of the project to invite members to
+    - `emails`: (string[]): An array of emails of the users to invite to the project.
+    - `usernames`: (string[]) An array of usernames of the users to invite to the project.
+    - `roleSlugs`: (string[]): An array of role slugs to assign to the members. If not specified, this will default to `member`.
+
+    **Returns:**
+    - `Membership[]`: An array of the created project memberships.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `environments`
 
-#### Create a new environment
+<AccordionGroup>
 
-```typescript
-const environment = await client.environments().create({
-  name: "<environment-name>",
-  projectId: "<your-project-id>",
-  slug: "<environment-slug>",
-  position: 1 // Optional
-});
-```
+  <Accordion title="Create a new environment">
 
-**Parameters:**
-- `name` (string): The name of the environment to be created.
-- `projectId` (string): The ID of the project to create the environment within.
-- `slug`: (string): The slug of the environment to be created.
-- `position` (number): An optional position of the environment to be created. The position is used in the Infisical UI to display environments in order. Environments with the lowest position come first.
+    ```typescript
+    const environment = await client.environments().create({
+      name: "<environment-name>",
+      projectId: "<your-project-id>",
+      slug: "<environment-slug>",
+      position: 1 // Optional
+    });
+    ```
 
-**Returns:**
-- `Environment`: The environment that was created.
+    **Parameters:**
+    - `name` (string): The name of the environment to be created.
+    - `projectId` (string): The ID of the project to create the environment within.
+    - `slug`: (string): The slug of the environment to be created.
+    - `position` (number): An optional position of the environment to be created. The position is used in the Infisical UI to display environments in order. Environments with the lowest position come first.
 
-#### Create a new folder
+    **Returns:**
+    - `Environment`: The environment that was created.
 
-```typescript
-const folder = await client.folders().create({
-  name: "<folder-name>",
-  path: "<folder-path>",
-  projectId: "<your-project-id>",
-  environment: "<environment-slug>",
-  description: "<folder-description>" // Optional
-});
-```
+  </Accordion>
 
-**Parameters:**
-- `name` (string): The name of the folder to create.
-- `path` (string): The path where of where to create the folder. Defaults to `/`, which is the root folder.
-- `projectId` (string): The ID of the project to create the folder within.
-- `environment` (string): The slug of the environment to create the folder within.
-- `description` (string): An optional folder description.
+</AccordionGroup>
 
-**Returns:**
-- `Folder`: The folder that was created.
+### `folders`
 
-#### List folders
+<AccordionGroup>
 
-```typescript
-const folders = await client.folders().listFolders({
-  environment: "dev",
-  projectId: "<your-project-id>",
-  path: "/foo/bar", // Optional
-  recursive: false // Optional
-});
-```
+  <Accordion title="Create a new folder">
 
-**Parameters:**
-- `environment` (string): The slug of the environment to list folders within.
-- `projectId` (string): The ID of the project to list folders within.
-- `path` (string): The path to list folders within. Defaults to `/`, which is the root folder.
-- `recursive` (boolean): An optional flag to list folders recursively. Defaults to `false`.
+    ```typescript
+    const folder = await client.folders().create({
+      name: "<folder-name>",
+      path: "<folder-path>",
+      projectId: "<your-project-id>",
+      environment: "<environment-slug>",
+      description: "<folder-description>" // Optional
+    });
+    ```
 
-**Returns:**
-- `Folder[]`: An array of folders.
+    **Parameters:**
+    - `name` (string): The name of the folder to create.
+    - `path` (string): The path where of where to create the folder. Defaults to `/`, which is the root folder.
+    - `projectId` (string): The ID of the project to create the folder within.
+    - `environment` (string): The slug of the environment to create the folder within.
+    - `description` (string): An optional folder description.
 
+    **Returns:**
+    - `Folder`: The folder that was created.
+
+  </Accordion>
+
+  <Accordion title="List folders">
+
+    ```typescript
+    const folders = await client.folders().listFolders({
+      environment: "dev",
+      projectId: "<your-project-id>",
+      path: "/foo/bar", // Optional
+      recursive: false // Optional
+    });
+    ```
+
+    **Parameters:**
+    - `environment` (string): The slug of the environment to list folders within.
+    - `projectId` (string): The ID of the project to list folders within.
+    - `path` (string): The path to list folders within. Defaults to `/`, which is the root folder.
+    - `recursive` (boolean): An optional flag to list folders recursively. Defaults to `false`.
+
+    **Returns:**
+    - `Folder[]`: An array of folders.
+
+  </Accordion>
+
+</AccordionGroup>
 ### `kms`
 
 The KMS (Key Management Service) module allows you to create and manage cryptographic keys for encryption and digital signing operations.
