@@ -615,135 +615,154 @@ In this section you'll learn how to work with dynamic secret leases
   </Accordion>
 
 </AccordionGroup>
+
 ### `kms`
 
 The KMS (Key Management Service) module allows you to create and manage cryptographic keys for encryption and digital signing operations.
 
-#### Create a new KMS key
+<AccordionGroup>
 
-Creating a new KMS key can be done by using the `.kms().keys().create({})` function. Keys can be created for either encryption/decryption or signing/verification operations.
+  <Accordion title="Create a new KMS key">
 
-##### Example for creating an encryption key
+    Creating a new KMS key can be done by using the `.kms().keys().create({})` function. Keys can be created for either encryption/decryption or signing/verification operations.
 
-```typescript
-import { InfisicalSDK, KeyUsage, EncryptionAlgorithm } from "@infisical/sdk";
-const client = new InfisicalSDK();
+    ##### Example for creating an encryption key
 
-await client.auth().universalAuth.login({
-	clientId: "CLIENT_ID",
-	clientSecret: "CLIENT_SECRET"
-});
+    ```typescript
+    import { InfisicalSDK, KeyUsage, EncryptionAlgorithm } from "@infisical/sdk";
+    const client = new InfisicalSDK();
 
-const encryptionKey = await client.kms().keys().create({
-	projectId: "your-project-id",
-	name: "my-encryption-key",
-	description: "Key for encrypting sensitive data",
-	keyUsage: KeyUsage.ENCRYPTION,
-	encryptionAlgorithm: EncryptionAlgorithm.AES_256_GCM
-});
+    await client.auth().universalAuth.login({
+      clientId: "CLIENT_ID",
+      clientSecret: "CLIENT_SECRET"
+    });
 
-console.log(encryptionKey);
-```
+    const encryptionKey = await client.kms().keys().create({
+      projectId: "your-project-id",
+      name: "my-encryption-key",
+      description: "Key for encrypting sensitive data",
+      keyUsage: KeyUsage.ENCRYPTION,
+      encryptionAlgorithm: EncryptionAlgorithm.AES_256_GCM
+    });
 
-##### Example for creating a signing key
+    console.log(encryptionKey);
+    ```
 
-```typescript
-const signingKey = await client.kms().keys().create({
-	projectId: "your-project-id",
-	name: "my-signing-key",
-	description: "Key for signing documents",
-	keyUsage: KeyUsage.SIGNING,
-	encryptionAlgorithm: EncryptionAlgorithm.RSA_4096
-});
+    ##### Example for creating a signing key
 
-console.log(signingKey);
-```
+    ```typescript
+    const signingKey = await client.kms().keys().create({
+      projectId: "your-project-id",
+      name: "my-signing-key",
+      description: "Key for signing documents",
+      keyUsage: KeyUsage.SIGNING,
+      encryptionAlgorithm: EncryptionAlgorithm.RSA_4096
+    });
 
-**Parameters:**
-- `projectId` (string): The ID of your project.
-- `name` (string): The name of the KMS key.
-- `description` (string, optional): A description of the key's purpose.
-- `keyUsage` (KeyUsage): Either `KeyUsage.ENCRYPTION` for encrypt/decrypt operations or `KeyUsage.SIGNING` for sign/verify operations.
-- `encryptionAlgorithm` (EncryptionAlgorithm): The algorithm to use. Options include:
-  - For encryption: `AES_256_GCM`, `AES_128_GCM`, `RSA_4096`, `ECC_NIST_P256`
-  - For signing: `RSA_4096`, `ECC_NIST_P256`
+    console.log(signingKey);
+    ```
 
-**Returns:**
-- `KmsKey`: The created KMS key object.
+    **Parameters:**
+    - `projectId` (string): The ID of your project.
+    - `name` (string): The name of the KMS key.
+    - `description` (string, optional): A description of the key's purpose.
+    - `keyUsage` (KeyUsage): Either `KeyUsage.ENCRYPTION` for encrypt/decrypt operations or `KeyUsage.SIGNING` for sign/verify operations.
+    - `encryptionAlgorithm` (EncryptionAlgorithm): The algorithm to use. Options include:
+      - For encryption: `AES_256_GCM`, `AES_128_GCM`, `RSA_4096`, `ECC_NIST_P256`
+      - For signing: `RSA_4096`, `ECC_NIST_P256`
 
-#### Get a KMS key by name
+    **Returns:**
+    - `KmsKey`: The created KMS key object.
 
-```typescript
-const key = await client.kms().keys().getByName({
-	projectId: "your-project-id",
-	name: "my-encryption-key"
-});
+  </Accordion>
 
-console.log(key);
-```
+  <Accordion title="Get a KMS key by name">
 
-**Parameters:**
-- `projectId` (string): The ID of your project.
-- `name` (string): The name of the KMS key to retrieve.
+    ```typescript
+    const key = await client.kms().keys().getByName({
+      projectId: "your-project-id",
+      name: "my-encryption-key"
+    });
 
-**Returns:**
-- `KmsKey`: The KMS key object.
+    console.log(key);
+    ```
 
-#### Delete a KMS key
+    **Parameters:**
+    - `projectId` (string): The ID of your project.
+    - `name` (string): The name of the KMS key to retrieve.
 
-```typescript
-const deletedKey = await client.kms().keys().delete({
-	keyId: "<kms-key-id>"
-});
+    **Returns:**
+    - `KmsKey`: The KMS key object.
 
-console.log(deletedKey);
-```
+  </Accordion>
 
-**Parameters:**
-- `keyId` (string): The ID of the KMS key to delete.
+  <Accordion title="Delete a KMS key">
 
-**Returns:**
-- `KmsKey`: The deleted KMS key object.
+    ```typescript
+    const deletedKey = await client.kms().keys().delete({
+      keyId: "<kms-key-id>"
+    });
+
+    console.log(deletedKey);
+    ```
+
+    **Parameters:**
+    - `keyId` (string): The ID of the KMS key to delete.
+
+    **Returns:**
+    - `KmsKey`: The deleted KMS key object.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `kms.encryption`
 
 The encryption module provides operations for encrypting and decrypting data using KMS keys created with `KeyUsage.ENCRYPTION`.
 
-#### Encrypt data
+<AccordionGroup>
 
-```typescript
-const encrypted = await client.kms().encryption().encrypt({
-	keyId: "<kms-key-id>",
-	plaintext: "<base64-encoded-data>"
-});
+  <Accordion title="Encrypt data">
 
-console.log(encrypted); // Returns the ciphertext string
-```
+    ```typescript
+    const encrypted = await client.kms().encryption().encrypt({
+      keyId: "<kms-key-id>",
+      plaintext: "<base64-encoded-data>"
+    });
 
-**Parameters:**
-- `keyId` (string): The ID of the encryption key.
-- `plaintext` (string): The data to encrypt. This must be base64 encoded.
+    console.log(encrypted); // Returns the ciphertext string
+    ```
 
-**Returns:**
-- `string`: The encrypted ciphertext.
+    **Parameters:**
+    - `keyId` (string): The ID of the encryption key.
+    - `plaintext` (string): The data to encrypt. This must be base64 encoded.
 
-#### Decrypt data
+    **Returns:**
+    - `string`: The encrypted ciphertext.
 
-```typescript
-const decrypted = await client.kms().encryption().decrypt({
-	keyId: "<kms-key-id>",
-	ciphertext: "<encrypted-data>"
-});
+  </Accordion>
 
-console.log(decrypted); // Returns the original plaintext
-```
+  <Accordion title="Decrypt data">
 
-**Parameters:**
-- `keyId` (string): The ID of the encryption key used to encrypt the data.
-- `ciphertext` (string): The encrypted data to decrypt.
+    ```typescript
+    const decrypted = await client.kms().encryption().decrypt({
+      keyId: "<kms-key-id>",
+      ciphertext: "<encrypted-data>"
+    });
 
-**Returns:**
-- `string`: The decrypted plaintext.
+    console.log(decrypted); // Returns the original plaintext
+    ```
+
+    **Parameters:**
+    - `keyId` (string): The ID of the encryption key used to encrypt the data.
+    - `ciphertext` (string): The encrypted data to decrypt.
+
+    **Returns:**
+    - `string`: The decrypted plaintext.
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `kms.signing`
 
