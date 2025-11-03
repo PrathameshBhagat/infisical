@@ -49,156 +49,174 @@ The SDK methods are organized into the following high-level categories:
 
 The `auth` component provides methods for authentication:
 
-#### Universal Auth
+<AccordionGroup>
 
-**Authenticating**
-```php
-$response = $sdk->auth()->universal_auth()->login(
+  <Accordion title="Universal Auth">
+
+    **Authenticating**
+    ```php
+    $response = $sdk->auth()->universal_auth()->login(
     "your-machine-identity-client-id",
     "your-machine-identity-client-secret"
-);
-```
+    );
+    ```
 
-**Parameters:**
-- `clientId` (string): The client ID of your Machine Identity.
-- `clientSecret` (string): The client secret of your Machine Identity.
+    **Parameters:**
+    - `clientId` (string): The client ID of your Machine Identity.
+    - `clientSecret` (string): The client secret of your Machine Identity.
 
-<Warning>
-  We do not recommend hardcoding your [Machine Identity Tokens](/documentation/platform/identities/overview). Setting them as environment variables would be best.
-</Warning>
+    <Warning>
+    We do not recommend hardcoding your [Machine Identity Tokens](/documentation/platform/identities/overview). Setting them as environment variables would be best.
+    </Warning>
+
+  </Accordion>
+
+</AccordionGroup>
 
 ### `Secrets`
 
 This sub-class handles operations related to secrets:
 
-#### List Secrets
+<AccordionGroup>
 
-```php
-use Infisical\SDK\Models\ListSecretsParameters;
+  <Accordion title="List Secrets">
 
-$params = new ListSecretsParameters(
-    environment: "dev",
-    secretPath: "/",
-    projectId: "your-project-id",
-    tagSlugs: ["tag1", "tag2"], // Optional
-    recursive: true, // Optional
-    expandSecretReferences: true, // Optional
-    attachToProcessEnv: false, // Optional
-    skipUniqueValidation: false // Optional
-);
+    ```php
+    use Infisical\SDK\Models\ListSecretsParameters;
 
-$secrets = $sdk->secrets()->list($params);
-```
+    $params = new ListSecretsParameters(
+        environment: "dev",
+        secretPath: "/",
+        projectId: "your-project-id",
+        tagSlugs: ["tag1", "tag2"], // Optional
+        recursive: true, // Optional
+        expandSecretReferences: true, // Optional
+        attachToProcessEnv: false, // Optional
+        skipUniqueValidation: false // Optional
+    );
 
-**Parameters:**
-- `environment` (string): The environment in which to list secrets (e.g., "dev").
-- `projectId` (string): The ID of your project.
-- `secretPath` (string, optional): The path to the secrets.
-- `tagSlugs` (array, optional): Tags to filter secrets.
-- `recursive` (bool, optional): Whether to list secrets recursively.
-- `expandSecretReferences` (bool, optional): Whether to expand secret references.
-- `attachToProcessEnv` (bool, optional): Whether to attach secrets to process environment variables.
-- `skipUniqueValidation` (bool, optional): Whether to skip unique validation.
+    $secrets = $sdk->secrets()->list($params);
+    ```
 
-**Returns:**
-- `Secret[]`: An array of secret objects.
+    **Parameters:**
+    - `environment` (string): The environment in which to list secrets (e.g., "dev").
+    - `projectId` (string): The ID of your project.
+    - `secretPath` (string, optional): The path to the secrets.
+    - `tagSlugs` (array, optional): Tags to filter secrets.
+    - `recursive` (bool, optional): Whether to list secrets recursively.
+    - `expandSecretReferences` (bool, optional): Whether to expand secret references.
+    - `attachToProcessEnv` (bool, optional): Whether to attach secrets to process environment variables.
+    - `skipUniqueValidation` (bool, optional): Whether to skip unique validation.
 
-#### Create Secret
+    **Returns:**
+    - `Secret[]`: An array of secret objects.
 
-```php
-use Infisical\SDK\Models\CreateSecretParameters;
+  </Accordion>
 
-$params = new CreateSecretParameters(
-    secretKey: "SECRET_NAME",
-    secretValue: "SECRET_VALUE",
-    environment: "dev",
-    secretPath: "/",
-    projectId: "your-project-id"
-);
+  <Accordion title="Create Secret">
 
-$createdSecret = $sdk->secrets()->create($params);
-```
+    ```php
+    use Infisical\SDK\Models\CreateSecretParameters;
 
-**Parameters:**
-- `secretKey` (string): The name of the secret to create.
-- `secretValue` (string): The value of the secret.
-- `environment` (string): The environment in which to create the secret.
-- `projectId` (string): The ID of your project.
-- `secretPath` (string, optional): The path to the secret.
+    $params = new CreateSecretParameters(
+        secretKey: "SECRET_NAME",
+        secretValue: "SECRET_VALUE",
+        environment: "dev",
+        secretPath: "/",
+        projectId: "your-project-id"
+    );
 
-**Returns:**
-- `Secret`: The created secret object.
+    $createdSecret = $sdk->secrets()->create($params);
+    ```
 
-#### Get Secret
+    **Parameters:**
+    - `secretKey` (string): The name of the secret to create.
+    - `secretValue` (string): The value of the secret.
+    - `environment` (string): The environment in which to create the secret.
+    - `projectId` (string): The ID of your project.
+    - `secretPath` (string, optional): The path to the secret.
 
-```php
-use Infisical\SDK\Models\GetSecretParameters;
+    **Returns:**
+    - `Secret`: The created secret object.
 
-$params = new GetSecretParameters(
-    secretKey: "SECRET_NAME",
-    environment: "dev",
-    secretPath: "/",
-    projectId: "your-project-id"
-);
+  </Accordion>
 
-$secret = $sdk->secrets()->get($params);
-```
+  <Accordion title="Get Secret">
 
-**Parameters:**
-- `secretKey` (string): The name of the secret to retrieve.
-- `environment` (string): The environment in which to retrieve the secret.
-- `projectId` (string): The ID of your project.
-- `secretPath` (string, optional): The path to the secret.
+    ```php
+    use Infisical\SDK\Models\GetSecretParameters;
 
-**Returns:**
-- `Secret`: The retrieved secret object.
+    $params = new GetSecretParameters(
+        secretKey: "SECRET_NAME",
+        environment: "dev",
+        secretPath: "/",
+        projectId: "your-project-id"
+    );
 
-#### Update Secret
+    $secret = $sdk->secrets()->get($params);
+    ```
 
-```php
-use Infisical\SDK\Models\UpdateSecretParameters;
+    **Parameters:**
+    - `secretKey` (string): The name of the secret to retrieve.
+    - `environment` (string): The environment in which to retrieve the secret.
+    - `projectId` (string): The ID of your project.
+    - `secretPath` (string, optional): The path to the secret.
 
-$params = new UpdateSecretParameters(
-    secretKey: "SECRET_NAME",
-    newSecretValue: "UPDATED_SECRET_VALUE",
-    environment: "dev",
-    secretPath: "/",
-    projectId: "your-project-id"
-);
+    **Returns:**
+    - `Secret`: The retrieved secret object.
 
-$updatedSecret = $sdk->secrets()->update($params);
-```
+  </Accordion>
 
-**Parameters:**
-- `secretKey` (string): The name of the secret to update.
-- `newSecretValue` (string): The new value of the secret.
-- `environment` (string): The environment in which to update the secret.
-- `projectId` (string): The ID of your project.
-- `secretPath` (string, optional): The path to the secret.
+  <Accordion title="Update Secret">
 
-**Returns:**
-- `Secret`: The updated secret object.
+    ```php
+    use Infisical\SDK\Models\UpdateSecretParameters;
 
-#### Delete Secret
+    $params = new UpdateSecretParameters(
+        secretKey: "SECRET_NAME",
+        newSecretValue: "UPDATED_SECRET_VALUE",
+        environment: "dev",
+        secretPath: "/",
+        projectId: "your-project-id"
+    );
 
-```php
-use Infisical\SDK\Models\DeleteSecretParameters;
+    $updatedSecret = $sdk->secrets()->update($params);
+    ```
 
-$params = new DeleteSecretParameters(
-    secretKey: "SECRET_NAME",
-    environment: "dev",
-    secretPath: "/",
-    projectId: "your-project-id"
-);
+    **Parameters:**
+    - `secretKey` (string): The name of the secret to update.
+    - `newSecretValue` (string): The new value of the secret.
+    - `environment` (string): The environment in which to update the secret.
+    - `projectId` (string): The ID of your project.
+    - `secretPath` (string, optional): The path to the secret.
 
-$deletedSecret = $sdk->secrets()->delete($params);
-```
+    **Returns:**
+    - `Secret`: The updated secret object.
 
-**Parameters:**
-- `secretKey` (string): The name of the secret to delete.
-- `environment` (string): The environment in which to delete the secret.
-- `projectId` (string): The ID of your project.
-- `secretPath` (string, optional): The path to the secret.
+  </Accordion>
 
-**Returns:**
-- `Secret`: The deleted secret object.
+  <Accordion title="Delete Secret">
+
+    ```php
+    use Infisical\SDK\Models\DeleteSecretParameters;
+
+    $params = new DeleteSecretParameters(
+        secretKey: "SECRET_NAME",
+        environment: "dev",
+        secretPath: "/",
+        projectId: "your-project-id"
+    );
+
+    $deletedSecret = $sdk->secrets()->delete($params);
+    ```
+
+    **Parameters:**
+    - `secretKey` (string): The name of the secret to delete.
+    - `environment` (string): The environment in which to delete the secret.
+    - `projectId` (string): The ID of your project.
+    - `secretPath` (string, optional): The path to the secret.
+
+    **Returns:**
+    - `Secret`: The deleted secret object
+  </Accordion>
+</AccordionGroup>
